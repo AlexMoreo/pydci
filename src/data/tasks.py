@@ -56,6 +56,7 @@ def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_tran
     patt = r"(?u)\b\w+\b" # japanese may contain words which are ony one symbol
 
     source_lan = 'en'
+    taskno=0
     for target_lan in ['de', 'fr', 'jp']:
         for domain in ['books', 'dvd', 'music']:
             print('Loading Webis-CLS-10 task '+'{}{}-{}{}'.format(source_lan,domain,target_lan,domain).upper())
@@ -82,15 +83,16 @@ def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_tran
             oracle = WordOracle(dictionaries['{}_{}_dict.txt'.format(source_lan, target_lan)],
                                 source_lan, target_lan, analyzer=CountVectorizer(token_pattern=patt).build_analyzer())
 
-            print('Domains load')
             print("source: X={} U={}".format(source.X.shape, source.U.shape))
             print("target: X={} U={}".format(target.X.shape, target.U.shape))
 
+            taskname = '{}. {} {}'.format(taskno, source.name(), target.name())
+            taskno+=1
             if skip_translations:
-                yield source, target, oracle
+                yield source, target, oracle, taskname
             else:
                 target_translations = Domain(T, Ty, None, source.V, domain, language='en')
-                yield source, target, target_translations, oracle
+                yield source, target, target_translations, oracle, taskname
 
 
 def _extract_MDS_documents(documents, domain):
@@ -125,15 +127,15 @@ def MDS_task_generator(dataset_home='../datasets/MDS', random_state=47, nfolds=5
             for fold, (train_idx, test_idx) in enumerate(skf.split(source_docs, source_labels)):
                 source = as_domain(source_docs[train_idx], source_labels[train_idx], source_unlabel,
                                    issource=True, domain=s_domain, min_df=3)
-
                 target = as_domain(target_docs[test_idx], target_labels[test_idx], target_unlabel,
                                    issource=False, domain=t_domain, min_df=3)
 
-                print('Domains load')
                 print("source: X={} U={}".format(source.X.shape, source.U.shape))
                 print("target: X={} U={}".format(target.X.shape, target.U.shape))
 
-                yield source, target, fold
+                taskname = '{} {}'.format(source.domain, target.domain)
+
+                yield source, target, fold, taskname
 
 
 def UpperMDS_task_generator(dataset_home='../datasets/MDS'):
@@ -165,8 +167,8 @@ def Reuters_task_generator(dataset_home='../datasets/Reuters'):
         source = Domain(Xs, ys, Xs, fake_vocab, task+'_source')
         target = Domain(Xt, yt, Xt, fake_vocab, task+'_target')
 
-        print('X.shape={}, y-prevalence={}'.format(source.X.shape, source.y.mean()))
-        print('X.shape={}, y-prevalence={}'.format(target.X.shape, target.y.mean()))
+        print('X.shape={}, y-prevalence={:.3f}'.format(source.X.shape, source.y.mean()))
+        print('X.shape={}, y-prevalence={:.3f}'.format(target.X.shape, target.y.mean()))
 
         yield source, target, '{}. {}'.format(order,task)
 
@@ -184,7 +186,7 @@ def _domain_from_usenet(news, positive, negative, domain_name, max_documents=Non
     X = tfidf.fit_transform(all_docs)
     y = np.array([1] * len(pos_docs) + [0] * len(neg_docs))
     V = tfidf.vocabulary_
-    print('X.shape={}, y-prevalence={}'.format(X.shape, y.mean()))
+    print('X.shape={}, y-prevalence={:.3f}'.format(X.shape, y.mean()))
     return Domain(X, y, X, V, domain_name)
 
 

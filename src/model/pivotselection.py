@@ -2,7 +2,8 @@ import numpy as np
 from scipy.sparse import csc_matrix
 from feature_selection.tsr_function import information_gain, ContTable
 
-def pivot_selection(npivots, X, y, sU, tU, sV, tV, oracle=None, tsr_function=information_gain, cross=True, phi=30, show=0):
+def pivot_selection(npivots, X, y, sU, tU, sV, tV,
+                    oracle=None, tsr_function=information_gain, cross=True, phi=30, show=0, n_candidates =-1):
     X = csc_matrix(X)
     nD,nF = X.shape
     positives = y.sum()
@@ -18,7 +19,8 @@ def pivot_selection(npivots, X, y, sU, tU, sV, tV, oracle=None, tsr_function=inf
     # applies the tsr_function to the 4-cell counters
     feat_informativeness = np.array(list(map(tsr_function, _4cell)))
 
-    n_candidates = npivots * 500 # this can be waived, but I have not tried
+    if n_candidates==-1:
+        n_candidates = npivots * 500
     candidates_idx_source = np.argsort(-feat_informativeness)[:n_candidates]
     feat_informativeness = feat_informativeness[candidates_idx_source]
 

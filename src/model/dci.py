@@ -1,15 +1,13 @@
 import numpy as np
 from scipy.sparse import csr_matrix
-import math
 from time import time
 from sklearn.externals.joblib import Parallel, delayed
 from sklearn.preprocessing import normalize
 
-"""
-Looks like in Python2 is faster, but slightly performs worse; my best guess is that there are some differences in the
-encoding Py2 and Py3 use... 
-"""
 class DCI:
+    """
+    Distributional Correspondence Indexing for domain adaptation.
+    """
 
     prob_dcf = ['pmi', 'linear']
     vect_dcf = ['cosine']

@@ -14,11 +14,10 @@ twentynews_home='../datasets/20news'
 sraa_home='../datasets/SRAA'
 reuters_home= '../datasets/Reuters21578'
 
-rperf = Result(['dataset', 'task', 'method', 'npivots', 'acc'])
-rtime = Result(['dataset', 'task', 'method', 'npivots', 'pivot_t', 'dci_t', 'svm_t', 'test_t'])
+rperf = Result(['dataset', 'task', 'method', 'acc'])
+rtime = Result(['dataset', 'task', 'method', 'pivot_t', 'dci_t', 'svm_t', 'test_t'])
 for source, target, task, dataset in Topic_task_generator(reuters_home=reuters_home, sraa_home=sraa_home, twenty_home=twentynews_home):
 
-    print('Pivot selection')
     tinit = time()
     s_pivots, t_pivots = pivot_selection(npivots, source.X, source.y, source.U, target.U,
                                          source.V, target.V,
