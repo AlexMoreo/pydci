@@ -5,7 +5,6 @@ from experiments.common import DCIclassify
 from model.dci import DCI
 from model.pivotselection import pivot_selection
 import numpy as np
-
 from util.results import Result
 
 optimize = True

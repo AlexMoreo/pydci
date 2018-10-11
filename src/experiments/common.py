@@ -1,10 +1,23 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import LinearSVC
-
 from data.domain import pack_domains
 from time import time
 
 def DCIclassify(source, target, s_pivots, t_pivots, dci, optimize=True):
+    """
+    This is a common routine for all experiments involving DCI. This function takes the source and target domain
+    and packs them toghether in the dictionary-based format of DCI, learns the projection, trains the classifier
+    (eventually optimizing hyperparameters), and evaluates the results. It also keeps track of some timings.
+    :param source: the source domain (training + unlabeled); is an instance of Domain
+    :param target: the source domain (testing  + unlabeled); is an instance of Domain
+    :param s_pivots: a np.ndarray with the indexes of the source pivots
+    :param t_pivots: a np.ndarray with the indexes of the target pivots
+    :param dci: an instantiation of the DCI
+    :param optimize: a boolean indicating whether to optimize the parameter C of the LinearSVC or not
+    :return: (acc, dci_time, svm_time, test_time) where acc is the accuracy of classification measured in the test set
+        dci_time is the time that the dci projection took, svm_time is the time to train (and optimize if requested)
+        the classifier, and test_time is the time that the evaluation took
+    """
 
     dX, dU, dP, dV = pack_domains(source, target, s_pivots, t_pivots)
 

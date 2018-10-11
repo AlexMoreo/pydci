@@ -28,7 +28,6 @@ for source, target, task, dataset in Topic_task_generator(reuters_home=reuters_h
     dci = DCI(dcf=dcf, unify=True, post='normal')
     acc, dci_time, svm_time, test_time = DCIclassify(source, target, s_pivots, t_pivots, dci, optimize=True)
 
-    # pivot_time, acc, dci_time, svm_time, test_time = 0.1, 0.2, 0.3, 0.4, 0.5
     rperf.add(dataset=dataset, task=task, method=str(dci), acc=acc)
     rtime.add(dataset=dataset, task=task, method=str(dci),
               pivot_t=pivot_time, dci_t=dci_time, svm_t=svm_time, test_t=test_time)
