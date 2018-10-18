@@ -32,6 +32,6 @@ for source, target, fold, taskname in MDS_task_generator(abspath(mds_home), nfol
               acc=acc,
               pivot_t=pivot_time, dci_t=dci_time, svm_t=svm_time, test_t=test_time)
 
-    rperf.dump('./DCI.{}.m{}.opt{}.norm{}.MDS.acc'.format(dcf,npivots,optimize,post))
+    rperf.dump('./DCI.{}.m{}.opt{}.MDS.acc'.format(dcf,npivots,optimize))
 
     rperf.pivot(grand_totals=True)
