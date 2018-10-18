@@ -6,11 +6,11 @@ import os
 from time import time
 from util.results import Result
 
-optimize = True
 dcf='cosine'
 npivots = 450
-norm='normal'
-dataset_home='../datasets/Webis-CLS-10'
+
+optimize = True
+dataset_home=os.path.abspath('../datasets/Webis-CLS-10')
 
 rperf = Result(['dataset', 'task', 'method', 'acc', 'pivot_t', 'dci_t', 'svm_t', 'test_t'])
 for source, target, oracle, taskname in WebisCLS10_task_generator(os.path.abspath(dataset_home)):
@@ -23,7 +23,7 @@ for source, target, oracle, taskname in WebisCLS10_task_generator(os.path.abspat
     pivot_time = time() - tinit
     print('pivot selection took {:.3f} seconds'.format(pivot_time))
 
-    dci = DCI(dcf=dcf, unify=True, post=norm)
+    dci = DCI(dcf=dcf, unify=True, post='normal')
     acc, dci_time, svm_time, test_time = DCIclassify(source, target, s_pivots, t_pivots, dci, optimize=optimize)
 
 
@@ -33,7 +33,7 @@ for source, target, oracle, taskname in WebisCLS10_task_generator(os.path.abspat
 
     rperf.dump('./DCI.{}.m{}.opt{}.norm{}.WebisCLS10.acc'.format(dcf, npivots, optimize, norm))
 
-    rperf.pivot()
+    rperf.pivot(grand_totals=True)
 
 
 
