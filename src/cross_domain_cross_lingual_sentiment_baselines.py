@@ -1,6 +1,6 @@
 from sklearn.model_selection import cross_val_score, GridSearchCV
 from sklearn.svm import LinearSVC
-from data.tasks import WebisCLS10_task_generator
+from data.tasks import WebisCLS10_crossdomain_crosslingual_task_generator
 from data.domain import unify_feat_space
 import os
 from util.results import Result
@@ -10,7 +10,8 @@ dataset_home='../datasets/Webis-CLS-10'
 results = Result(['dataset', 'task', 'method', 'acc'])
 
 parameters = {'C': [10 ** i for i in range(-5, 5)]}
-for source, target, oracle, taskname in WebisCLS10_task_generator(os.path.abspath(dataset_home)):
+
+for source, target, oracle, taskname in WebisCLS10_crossdomain_crosslingual_task_generator(os.path.abspath(dataset_home)):
 
     # upper
     svm = GridSearchCV(LinearSVC(), parameters, n_jobs=-1, verbose=1, cv=5)

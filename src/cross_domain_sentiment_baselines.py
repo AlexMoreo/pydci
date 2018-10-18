@@ -1,12 +1,11 @@
 from sklearn.model_selection import cross_val_score, GridSearchCV
 from sklearn.svm import LinearSVC
-
 from data.domain import unify_feat_space
 from data.tasks import MDS_task_generator, UpperMDS_task_generator
 from os.path import abspath
 from util.results import Result
 
-dataset_home='../../datasets/MDS'
+dataset_home='../datasets/MDS'
 
 results = Result(['dataset', 'task', 'method', 'fold', 'acc'])
 nfolds=5
