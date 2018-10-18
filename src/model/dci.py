@@ -14,7 +14,7 @@ class DCI:
     valid_dcf = prob_dcf + vect_dcf
     valid_post = ['normal', None]
 
-    def __init__(self, dcf='cosine', post=False, n_jobs=-1, verbose=0, unify=False):
+    def __init__(self, dcf='cosine', post=None, n_jobs=-1, verbose=0, unify=False):
         """
         :param dcf: a distributional correspondence function name (e.g., 'cosine'), or a callable that, given two
                 matrices F, P of shape (#features,#documents) and (#pivots,#documents) returns a matrix of
@@ -104,7 +104,7 @@ class DCI:
         _X = X.dot(FP)
         _X = normalize(_X, norm='l2', axis=1)
         if self.post == 'normal':
-            # this might cause problems if
+            # this might cause problems if there are important class prevalence drifts
             std = np.clip(np.std(_X, axis=0), 1e-5, None)
             _X = (_X - np.mean(_X, axis=0)) / std
         return _X
@@ -145,6 +145,10 @@ def dcf_dist(F, P, dcf):
     # standardization
     dists = zscores(dists)
 
+    if (dists.dtype.char in np.typecodes['AllFloat'] and not np.isfinite(dists.sum()) and not np.isfinite(dists).all()):
+        print('error aqui')
+
+
     # normalizing profiles to unit length
     normalize(dists, norm='l2', axis=1, copy=False)
 
@@ -180,7 +184,7 @@ def PMI(F, P):
     F=1*(F>0)
     P=1*(P>0)
 
-    TP = F.dot(P.T)
+    TP = F.dot(P.T).toarray().astype(np.float)
     FP = F.sum(axis=1) - TP
     FN = P.sum(axis=1).T - TP
 
@@ -188,14 +192,12 @@ def PMI(F, P):
     Pfp = FP / D
     Pfn = FN / D
 
-    Ptp = Ptp.toarray()
-    nonzero = Ptp > 0
-
     denom = np.asarray(np.multiply(Pfp,Pfn))
-    denom[denom==0]=1
 
-    Ptp[nonzero] /= denom[nonzero]
-    return np.log2(Ptp, where=Ptp>0)
+    Ptp = np.divide(Ptp, denom, where=denom!=0)
+    pmi = np.log2(Ptp, where=Ptp>0)
+    pmi[np.isnan(pmi)]=0
+    return pmi
 
 
 def linear(F, P):

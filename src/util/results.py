@@ -20,6 +20,7 @@ class Result:
             res = Result(df.columns.values)
             res.df = df
         elif create_if_not_exists:
+            print('no file found in {}, returning a new one'.format(path))
             res = Result(cls.default_column_names)
         else: raise ValueError('File does not exist')
         return res
@@ -48,8 +49,8 @@ class Result:
         self.df.to_csv(path, sep='\t')
 
 
-    def pivot(self, values='acc', aggfunc=np.mean, grand_totals=False):
-        pv = pd.pivot_table(self.df, values=values, index=['dataset','task'], columns=['method'], aggfunc=aggfunc)
+    def pivot(self, index=['dataset','task'], values='acc', aggfunc=np.mean, grand_totals=False):
+        pv = pd.pivot_table(self.df, values=values, index=index, columns=['method'], aggfunc=aggfunc)
         print(pv)
         if grand_totals:
             print('\nGrand Totals')

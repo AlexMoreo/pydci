@@ -95,6 +95,49 @@ def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_tran
                 yield source, target, target_translations, oracle, taskname
 
 
+def WebisCLS10_crossdomain_crosslingual_task_generator(dataset_home='../datasets/Webis-CLS-10'):
+    """
+    Generates the tasks for cross-lingual and cross-lingual (simultaneusly) experiments in Webis-CLS-10 dataset
+    :param dataset_home: the path where to store the dataset
+    :return: yields tasks (source domain, target domain, and source-to-target oracle).
+    """
+    print('fetching Webis-CLS-10')
+    documents, translations, dictionaries = fetch_Webis_cls_10(dataset_home=dataset_home, skip_translations=True, dopickle=True)
+
+    patt = r"(?u)\b\w+\b" # japanese may contain words which are ony one symbol
+
+    source_lan = 'en'
+    taskno=0
+    for s_domain in ['books', 'dvd', 'music']:
+        for target_lan in ['de', 'fr', 'jp']:
+            for t_domain in ['books', 'dvd', 'music']:
+                if s_domain == t_domain: continue
+
+                print('Loading Webis-CLS-10 task '+'{}{}-{}{}'.format(source_lan,s_domain,target_lan,s_domain).upper())
+
+                tr_s_docs, tr_s_labels = list(zip(*documents[source_lan][s_domain]['train.processed']))
+                unlabel_s_docs, _ = list(zip(*documents[source_lan][s_domain]['unlabeled.processed']))
+                source = as_domain(tr_s_docs, tr_s_labels, unlabel_s_docs,
+                                   issource=True, translations=None, domain=s_domain, language=source_lan,
+                                   tokken_pattern=patt, min_df=1)
+
+                te_t_docs, te_t_labels = list(zip(*documents[target_lan][t_domain]['test.processed']))
+                unlabel_t_docs, _ = list(zip(*documents[target_lan][t_domain]['unlabeled.processed']))
+                target = as_domain(te_t_docs, te_t_labels, unlabel_t_docs,
+                                   issource=False, domain=t_domain, language=target_lan,
+                                   tokken_pattern=patt, min_df=3)
+
+                oracle = WordOracle(dictionaries['{}_{}_dict.txt'.format(source_lan, target_lan)],
+                                    source_lan, target_lan, analyzer=CountVectorizer(token_pattern=patt).build_analyzer())
+
+                print("source: X={} U={}".format(source.X.shape, source.U.shape))
+                print("target: X={} U={}".format(target.X.shape, target.U.shape))
+
+                taskname = '{}. {} {}'.format(taskno, source.name(), target.name())
+                taskno+=1
+                yield source, target, oracle, taskname
+
+
 def _extract_MDS_documents(documents, domain):
     pos_docs = [d for d, label in documents[domain]['positive.review']]
     neg_docs = [d for d, label in documents[domain]['negative.review']]
@@ -125,6 +168,7 @@ def MDS_task_generator(dataset_home='../datasets/MDS', random_state=47, nfolds=5
 
             skf = StratifiedKFold(n_splits=nfolds, random_state=random_state, shuffle=True)
             for fold, (train_idx, test_idx) in enumerate(skf.split(source_docs, source_labels)):
+
                 source = as_domain(source_docs[train_idx], source_labels[train_idx], source_unlabel,
                                    issource=True, domain=s_domain, min_df=3)
                 target = as_domain(target_docs[test_idx], target_labels[test_idx], target_unlabel,
