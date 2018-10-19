@@ -14,6 +14,7 @@ This package has been tested with the following environment (though it might wor
 * Numpy 1.15.2
 * Scipy 1.0.0
 * Sklearn 0.19.1
+* Pandas 0.20.3
 
 ## Replicate the experiments:
 
