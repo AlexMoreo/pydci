@@ -21,7 +21,7 @@ This package has been tested with the following environment (though it might wor
 First, clone the repo by typing:
 
 ```
-https://github.com/AlexMoreo/pydci.git
+git clone https://github.com/AlexMoreo/pydci.git
 ```
 
 There is one script devoted to reproduce each of the experiments reported in [arXiv pending]. 
