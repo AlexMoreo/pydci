@@ -145,10 +145,6 @@ def dcf_dist(F, P, dcf):
     # standardization
     dists = zscores(dists)
 
-    if (dists.dtype.char in np.typecodes['AllFloat'] and not np.isfinite(dists.sum()) and not np.isfinite(dists).all()):
-        print('error aqui')
-
-
     # normalizing profiles to unit length
     normalize(dists, norm='l2', axis=1, copy=False)
 
