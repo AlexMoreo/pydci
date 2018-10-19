@@ -33,7 +33,7 @@ cd pydci/src
 python cross_domain_sentiment.py
 ```
 
-The script produces a result CSV file containing the classification accuracy for each (source,target) domain combination (in the case of cross-domain, also for each fold), and some timings recorded during the execution (time took to extract pivots, to project the feature spaces, to fit the classifier, and to annotate test documents). The script displays a summary of the accuracy when it finishes. The order of appearance of the tasks is the common order followed by most papers, that is:
+The script will download the dataset the first time it is invoked. The script produces a result CSV file containing the classification accuracy for each (source,target) domain combination (in the case of cross-domain, also for each fold), and some timings recorded during the execution (time took to extract pivots, to project the feature spaces, to fit the classifier, and to annotate test documents). A summary of the classification accuracy is displayed when it finishes. The order of appearance of the tasks is the common order followed by most papers, that is:
 
 ```
 method                       DCI(cosine)
@@ -50,5 +50,10 @@ MDS     books dvd                 0.8225
         kitchen books             0.8075
         kitchen dvd               0.8060
         kitchen electronics       0.8600
+        
+Grand Totals
+method   DCI(cosine)
+dataset   
+MDS         0.833375
 ```
 
