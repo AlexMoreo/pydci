@@ -100,16 +100,6 @@ class DCI:
             self.dFP[d][dIndexes[d]] = unified_matrix
 
 
-    def _dom_transform(self, X, FP):
-        _X = X.dot(FP)
-        _X = normalize(_X, norm='l2', axis=1)
-        if self.post == 'normal':
-            # this might cause problems if there are important class prevalence drifts
-            std = np.clip(np.std(_X, axis=0), 1e-5, None)
-            _X = (_X - np.mean(_X, axis=0)) / std
-        return _X
-
-
     # dX is a dictionary of {domain:dsm}, where dsm (distributional semantic model) is, e.g., a document-by-term csr_matrix
     def transform(self, dX):
         assert self.dFP is not None, 'transform method called before fit'
