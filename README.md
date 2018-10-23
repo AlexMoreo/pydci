@@ -24,7 +24,7 @@ First, clone the repo by typing:
 git clone https://github.com/AlexMoreo/pydci.git
 ```
 
-There is one script devoted to reproduce each of the experiments reported in [arXiv pending]. 
+There is one script devoted to reproduce each of the experiments reported in https://arxiv.org/abs/1810.09311.
 The scripts are very simple and they do not parse command line arguments. To replicate other configurations, just change some variables in the script (e.g., dcf= 'linear', or npivots = 900 to run PyDCI(linear) with 900 pivots) or create your own script.
 To replicate, e.g., the cross-domain adaptation experiments, simply run:
 
