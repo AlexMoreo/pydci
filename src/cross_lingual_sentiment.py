@@ -19,7 +19,7 @@ for source, target, oracle, taskname in WebisCLS10_task_generator(os.path.abspat
     tinit = time()
     s_pivots, t_pivots = pivot_selection(npivots, source.X, source.y, source.U, target.U,
                                          source.V, target.V,
-                                         oracle=oracle, phi=30, show=min(10, npivots), cross=False)
+                                         oracle=oracle, phi=30, show=min(10, npivots), cross_consistency=False)
     pivot_time = time() - tinit
     print('pivot selection took {:.3f} seconds'.format(pivot_time))
 

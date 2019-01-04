@@ -25,7 +25,7 @@ pivot_range = [10,25,50,100,250,500,1000,1500,2000,2500,5000]
 for source, target, fold, taskname in MDS_task_generator(abspath(mds_home), nfolds=nfolds):
     s_pivots, t_pivots = pivot_selection(max(pivot_range), source.X, source.y, source.U, target.U,
                                          source.V, target.V,
-                                         phi=1, cross=True)
+                                         phi=1, cross_consistency=True)
 
     for npivots in pivot_range:
         for dcf in ['cosine','linear']:
@@ -38,7 +38,7 @@ for source, target, fold, taskname in MDS_task_generator(abspath(mds_home), nfol
 for source, target, oracle, taskname in WebisCLS10_task_generator(abspath(dataset_home)):
     s_pivots, t_pivots = pivot_selection(max(pivot_range), source.X, source.y, source.U, target.U,
                                          source.V, target.V,
-                                         oracle=oracle, phi=30, cross=False)
+                                         oracle=oracle, phi=30, cross_consistency=False)
     for npivots in pivot_range:
         t_pivots_sel = t_pivots[:npivots].astype(np.float)
         if not np.isnan(t_pivots_sel).any():

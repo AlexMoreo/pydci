@@ -21,7 +21,7 @@ for source, target, fold, taskname in MDS_task_generator(abspath(mds_home), nfol
     tinit = time()
     s_pivots, t_pivots = pivot_selection(npivots, source.X, source.y, source.U, target.U,
                                          source.V, target.V,
-                                         phi=1, show=min(10, npivots), cross=True)
+                                         phi=1, show=min(10, npivots), cross_consistency=True)
     pivot_time = time() - tinit
     print('pivot selection took {:.3f} seconds'.format(pivot_time))
 

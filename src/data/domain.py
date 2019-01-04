@@ -71,6 +71,9 @@ class Vocabulary:
     def index_list(self):
         return sorted(self._idx2word.keys())
 
+    def __contains__(self, word):
+        return word in self._word2idx
+
 
 class WordOracle:
     """
