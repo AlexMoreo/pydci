@@ -3,9 +3,11 @@
 
 This python implementation of the Distributional Correspondence Indexig (DCI) for domain adaptation allows to replicate experiments for:
 
-* **Cross-domain adaptation**: using the *MultiDomainSentiment* (MDS) dataset
+* **Cross-domain adaptation (by Sentiment)**: using the *MultiDomainSentiment* (MDS) dataset
   
-* **Cross-lingual adaptation**: using the *Webis-CLS-10* dataset
+* **Cross-lingual adaptation (by Sentiment)**: using the *Webis-CLS-10* dataset
+
+* **Cross-domain adaptation (by Topic)**: using the *Reuters, SRAA,* and *20Newsgroups* datasets
 
 ## Requirements
 
@@ -15,6 +17,7 @@ This package has been tested with the following environment (though it might wor
 * Scipy 1.0.0
 * Sklearn 0.19.1
 * Pandas 0.20.3
+* SVMlight (for transductive inference)
 
 ## Replicate the experiments:
 
@@ -57,3 +60,9 @@ dataset
 MDS         0.833375
 ```
 
+## Transductive Adaptation:
+
+A bunch of scripts have been added to replicate experiments using TDCI (the transductive 
+variant of DCI for cross-lingual and cross-domain adaptation). Those scripts are marked
+with a "_transductive" postfix. SVMlight is required in order to make them work.
+The paper discussing this variant and the results is currently under review.
