@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 from time import time
-from sklearn.externals.joblib import Parallel, delayed
+from joblib import Parallel, delayed
 from sklearn.preprocessing import normalize
+
 
 class DCI:
     """
@@ -34,7 +35,7 @@ class DCI:
             if dcf not in self.valid_dcf:
                 raise ValueError("unknown dcf; use any in [%s]" % ', '.join(self.valid_dcf))
             if dcf == 'cosine': self.dcf = cosine
-            if dcf == 'pmi': self.dcf = PMI
+            if dcf == 'pmi': self.dcf = pmi
             if dcf == 'linear': self.dcf = linear
         elif hasattr(dcf, '__call__'):
             self.dcf = dcf
@@ -120,7 +121,8 @@ class DCI:
     def __str__(self):
         return "DCI({})".format(self.dcf.__name__)
 
-def zscores(x): #scipy.stats.zscores does not avoid division by 0, which can indeed occur
+
+def zscores(x):  #scipy.stats.zscores does not avoid division by 0, which can indeed occur
     std = np.clip(np.std(x, axis=0), 1e-5, None)
     mean = np.mean(x, axis=0)
     return (x - mean) / std
@@ -164,7 +166,7 @@ def cosine(F, P):
     return cos - prev_factor
 
 
-def PMI(F, P):
+def pmi(F, P):
     nF,D = F.shape
 
     F=1*(F>0)

@@ -1,11 +1,11 @@
 import pandas as pd
 import os
 from util.file import create_if_not_exist
-# pd.set_option('display.height', 1000) # deprecated
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 import numpy as np
+
 
 class Result:
     default_column_names = ['dataset', 'task', 'method', 'acc', 'time']
@@ -47,7 +47,6 @@ class Result:
     def dump(self, path):
         create_if_not_exist(os.path.dirname(path))
         self.df.to_csv(path, sep='\t')
-
 
     def pivot(self, index=['dataset','task'], values='acc', aggfunc=np.mean, grand_totals=False):
         pv = pd.pivot_table(self.df, values=values, index=index, columns=['method'], aggfunc=aggfunc)

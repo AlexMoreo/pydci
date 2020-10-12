@@ -2,6 +2,7 @@ import numpy as np
 from scipy.sparse import csc_matrix
 from feature_selection.tsr_function import information_gain, ContTable
 
+
 def pivot_selection(npivots, X, y, sU, tU, sV, tV,
                     oracle=None, tsr_function=information_gain, cross=True, phi=30, show=0, n_candidates =-1):
     X = csc_matrix(X)
@@ -53,9 +54,8 @@ def pivot_selection(npivots, X, y, sU, tU, sV, tV,
     #show top pivots
     show = min(show, npivots)
     for i in range(show):
-        print('{}: {}{} ({:.4f})'.format(
-            i, sV.idx2word(s_pivots[i]), (' (' + tV.idx2word(t_pivots[i]) + ')') if oracle else '', term_strength[i])
-        )
+        pivot_translation = (' (' + tV.idx2word(t_pivots[i]) + ')') if oracle else ''
+        print(f'{i}: {sV.idx2word(s_pivots[i])}{pivot_translation} ({term_strength[i]:.4f})')
     if show > 0 and npivots > show:
         print('...')
 

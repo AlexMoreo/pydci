@@ -5,14 +5,12 @@ from data.domain import unify_feat_space
 import os
 from util.results import Result
 
+
 dataset_home='../datasets/Webis-CLS-10'
-
-results = Result(['dataset', 'task', 'method', 'acc'])
-
 parameters = {'C': [10 ** i for i in range(-5, 5)]}
 
+results = Result(['dataset', 'task', 'method', 'acc'])
 for source, target, oracle, taskname in WebisCLS10_crossdomain_crosslingual_task_generator(os.path.abspath(dataset_home)):
-
     # upper
     svm = GridSearchCV(LinearSVC(), parameters, n_jobs=-1, verbose=1, cv=5)
     source, target = unify_feat_space(source, target)

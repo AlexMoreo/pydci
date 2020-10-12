@@ -5,18 +5,16 @@ from data.tasks import MDS_task_generator, UpperMDS_task_generator
 from os.path import abspath
 from util.results import Result
 
+
 dataset_home='../datasets/MDS'
-
-results = Result(['dataset', 'task', 'method', 'fold', 'acc'])
 nfolds=5
-
 upper={}
 parameters = {'C': [10 ** i for i in range(-5, 5)]}
 
+results = Result(['dataset', 'task', 'method', 'fold', 'acc'])
 for domain in UpperMDS_task_generator(abspath(dataset_home)):
     svm = GridSearchCV(LinearSVC(), parameters, n_jobs=-1, verbose=1, cv=5)
     upper[domain.domain] = cross_val_score(svm, domain.X, domain.y, cv=5).mean()
-
 
 for source, target, fold, taskname in MDS_task_generator(abspath(dataset_home), nfolds=nfolds):
     svm = GridSearchCV(LinearSVC(), parameters, n_jobs=-1, verbose=1, cv=5)

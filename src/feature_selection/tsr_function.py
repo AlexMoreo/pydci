@@ -1,5 +1,6 @@
 import math
 
+
 def information_gain(cell):
     def ig_factor(p_tc, p_t, p_c):
         den = p_t * p_c

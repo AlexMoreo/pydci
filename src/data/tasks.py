@@ -1,14 +1,11 @@
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer, TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from data.fetch import *
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
-from util.file import *
-from data.domain import Domain, WordOracle, Vocabulary, unify_feat_space
-from itertools import chain
+from data.domain import Domain, WordOracle
 
 
-
-def as_domain(labeled_docs, labels, unlabeled_docs, issource, domain, translations=None, language='en', tokken_pattern=r"(?u)\b\w\w+\b", min_df=1):
+def as_domain(labeled_docs, labels, unlabeled_docs, issource, domain, translations=None, language='en', tokken_pattern=r"(?u)\b\w\w+\b", min_df=1, tfidf=True):
     """
     Represents raw documents as a Domain; a domain contains the tfidf weighted co-occurrence matrices of the labeled
     and unlabeled documents (with consistent Vocabulary).
@@ -28,22 +25,28 @@ def as_domain(labeled_docs, labels, unlabeled_docs, issource, domain, translatio
     if issource:
         counter = CountVectorizer(token_pattern=tokken_pattern, min_df=min_df)
         v = counter.fit(labeled_docs).vocabulary_
-        tfidf = TfidfVectorizer(sublinear_tf=True, token_pattern=tokken_pattern, vocabulary=v)
+        if tfidf:
+            vectorizer = TfidfVectorizer(sublinear_tf=True, token_pattern=tokken_pattern, vocabulary=v)
+        else:
+            vectorizer = CountVectorizer(token_pattern=tokken_pattern, vocabulary=v)
     else:
-        tfidf = TfidfVectorizer(sublinear_tf=True, token_pattern=tokken_pattern, min_df=min_df)
-    U = tfidf.fit_transform(unlabeled_docs)
-    X = tfidf.transform(labeled_docs)
+        if tfidf:
+            vectorizer = TfidfVectorizer(sublinear_tf=True, token_pattern=tokken_pattern, min_df=min_df)
+        else:
+            vectorizer = CountVectorizer(token_pattern=tokken_pattern, min_df=min_df)
+    U = vectorizer.fit_transform(unlabeled_docs)
+    X = vectorizer.transform(labeled_docs)
     y = np.array(labels)
-    V = tfidf.vocabulary_
+    V = vectorizer.vocabulary_
     domain = Domain(X, y, U, V, domain, language)
     if translations is not None:
-        T = tfidf.transform(translations)
+        T = vectorizer.transform(translations)
         return domain, T
     else:
         return domain
 
 
-def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_translations=True):
+def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_translations=True, tfidf=True):
     """
     Generates the tasks for cross-lingual experiments in Webis-CLS-10 dataset
     :param dataset_home: the path where to store the dataset
@@ -67,18 +70,18 @@ def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_tran
                 transl_t_docs, transl_t_labels = list(zip(*translations[target_lan][domain]['test.processed']))
                 source, T = as_domain(tr_s_docs, tr_s_labels, unlabel_s_docs,
                                    issource=True, translations=transl_t_docs, domain=domain, language=source_lan,
-                                   tokken_pattern=patt, min_df=1)
+                                   tokken_pattern=patt, min_df=1, tfidf=tfidf)
                 Ty = np.array(transl_t_labels)
             else:
                 source = as_domain(tr_s_docs, tr_s_labels, unlabel_s_docs,
                                issource=True, translations=None, domain=domain, language=source_lan,
-                               tokken_pattern=patt, min_df=1)
+                               tokken_pattern=patt, min_df=1, tfidf=tfidf)
 
             te_t_docs, te_t_labels = list(zip(*documents[target_lan][domain]['test.processed']))
             unlabel_t_docs, _ = list(zip(*documents[target_lan][domain]['unlabeled.processed']))
             target = as_domain(te_t_docs, te_t_labels, unlabel_t_docs,
                                issource=False, domain=domain, language=target_lan,
-                               tokken_pattern=patt, min_df=3)
+                               tokken_pattern=patt, min_df=3, tfidf=tfidf)
 
             oracle = WordOracle(dictionaries['{}_{}_dict.txt'.format(source_lan, target_lan)],
                                 source_lan, target_lan, analyzer=CountVectorizer(token_pattern=patt).build_analyzer())
@@ -95,7 +98,7 @@ def WebisCLS10_task_generator(dataset_home='../datasets/Webis-CLS-10', skip_tran
                 yield source, target, target_translations, oracle, taskname
 
 
-def WebisCLS10_crossdomain_crosslingual_task_generator(dataset_home='../datasets/Webis-CLS-10'):
+def WebisCLS10_crossdomain_crosslingual_task_generator(dataset_home='../datasets/Webis-CLS-10', tfidf=True):
     """
     Generates the tasks for cross-lingual and cross-lingual (simultaneusly) experiments in Webis-CLS-10 dataset
     :param dataset_home: the path where to store the dataset
@@ -119,13 +122,13 @@ def WebisCLS10_crossdomain_crosslingual_task_generator(dataset_home='../datasets
                 unlabel_s_docs, _ = list(zip(*documents[source_lan][s_domain]['unlabeled.processed']))
                 source = as_domain(tr_s_docs, tr_s_labels, unlabel_s_docs,
                                    issource=True, translations=None, domain=s_domain, language=source_lan,
-                                   tokken_pattern=patt, min_df=1)
+                                   tokken_pattern=patt, min_df=1, tfidf=tfidf)
 
                 te_t_docs, te_t_labels = list(zip(*documents[target_lan][t_domain]['test.processed']))
                 unlabel_t_docs, _ = list(zip(*documents[target_lan][t_domain]['unlabeled.processed']))
                 target = as_domain(te_t_docs, te_t_labels, unlabel_t_docs,
                                    issource=False, domain=t_domain, language=target_lan,
-                                   tokken_pattern=patt, min_df=3)
+                                   tokken_pattern=patt, min_df=3, tfidf=tfidf)
 
                 oracle = WordOracle(dictionaries['{}_{}_dict.txt'.format(source_lan, target_lan)],
                                     source_lan, target_lan, analyzer=CountVectorizer(token_pattern=patt).build_analyzer())
@@ -147,7 +150,7 @@ def _extract_MDS_documents(documents, domain):
     return labeled_docs, labels, unlabeled_docs
 
 
-def MDS_task_generator(dataset_home='../datasets/MDS', random_state=47, nfolds=5):
+def MDS_task_generator(dataset_home='../datasets/MDS', random_state=47, nfolds=5, tfidf=True):
     """
     Generates the tasks for cross-domain experiments in MDS dataset
     :param dataset_home: the path where to store the dataset
@@ -170,9 +173,9 @@ def MDS_task_generator(dataset_home='../datasets/MDS', random_state=47, nfolds=5
             for fold, (train_idx, test_idx) in enumerate(skf.split(source_docs, source_labels)):
 
                 source = as_domain(source_docs[train_idx], source_labels[train_idx], source_unlabel,
-                                   issource=True, domain=s_domain, min_df=3)
+                                   issource=True, domain=s_domain, min_df=3, tfidf=tfidf)
                 target = as_domain(target_docs[test_idx], target_labels[test_idx], target_unlabel,
-                                   issource=False, domain=t_domain, min_df=3)
+                                   issource=False, domain=t_domain, min_df=3, tfidf=tfidf)
 
                 print("source: X={} U={}".format(source.X.shape, source.U.shape))
                 print("target: X={} U={}".format(target.X.shape, target.U.shape))
@@ -182,7 +185,7 @@ def MDS_task_generator(dataset_home='../datasets/MDS', random_state=47, nfolds=5
                 yield source, target, fold, taskname
 
 
-def UpperMDS_task_generator(dataset_home='../datasets/MDS'):
+def UpperMDS_task_generator(dataset_home='../datasets/MDS', tfidf=True):
 
     print('fetching MDS')
     documents = fetch_MDS(dataset_home=dataset_home)
@@ -190,6 +193,6 @@ def UpperMDS_task_generator(dataset_home='../datasets/MDS'):
     domains = ['books', 'dvd', 'electronics', 'kitchen']
     for domain in domains:
         docs, labels, source_unlabel = _extract_MDS_documents(documents, domain)
-        yield as_domain(docs, labels, source_unlabel, issource=True, domain=domain, min_df=3)
+        yield as_domain(docs, labels, source_unlabel, issource=True, domain=domain, min_df=3, tfidf=tfidf)
 
 
