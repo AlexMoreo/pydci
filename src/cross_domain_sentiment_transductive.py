@@ -8,7 +8,7 @@ from util.results import Result
 dcf= 'cosine'
 npivots = 1000
 optimize = False
-transductive = False
+transductive = True
 
 nfolds=5
 mds_home= '../datasets/MDS'
