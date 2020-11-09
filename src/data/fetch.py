@@ -50,7 +50,8 @@ def fetch_MDS(DOWNLOAD_URL = 'https://www.cs.jhu.edu/~mdredze/datasets/sentiment
     return documents
 
 
-def fetch_Webis_cls_10(DOWNLOAD_URL = 'http://www.uni-weimar.de/medien/webis/corpora/corpus-webis-cls-10/cls-acl10-processed.tar.gz',
+def fetch_Webis_cls_10(DOWNLOAD_URL = 'https://zenodo.org/record/3251672/files/cls-acl10-processed.tar.gz?download=1',
+                       #DOWNLOAD_URL = 'http://www.uni-weimar.de/medien/webis/corpora/corpus-webis-cls-10/cls-acl10-processed.tar.gz',
                        dataset_home = '../datasets/Webis-CLS-10',
                        max_documents=50000,
                        languages=['de','en','fr','jp'],
@@ -218,7 +219,7 @@ def fetch_sraa(DOWNLOAD_URL = 'http://people.cs.umass.edu/~mccallum/data/sraa.ta
 
     if not exists(dataset_path):
         create_if_not_exist(dataset_home)
-        print("downloading Reuters dataset (once and for all) into %s" % dataset_path)
+        print("downloading SRAA dataset (once and for all) into %s" % dataset_path)
         download_file(DOWNLOAD_URL, dataset_path)
         print("untarring dataset...")
         tarfile.open(dataset_path, 'r:gz').extractall(dataset_home)
