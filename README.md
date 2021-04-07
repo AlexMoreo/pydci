@@ -9,6 +9,29 @@ This python implementation of the Distributional Correspondence Indexig (DCI) fo
 
 * **Cross-domain adaptation (by Topic)**: using the *Reuters, SRAA,* and *20Newsgroups* datasets
 
+## Publications
+
+The main method is described in:
+
+* Distributional Correspondence Indexing for Cross-Lingual and Cross-Domain Sentiment Classification. A Moreo, A Esuli, F Sebastiani, Journal of Artificial Intelligence Research 55, 131-163 [pdf](https://www.jair.org/index.php/jair/article/view/10977)
+* Distributional Correspondence Indexing for Cross-Language Text Categorization, A Esuli, A Moreo, Advances in Information Retrieval, 104-109 [pdf](http://www.esuli.it/publications/ECIR2015.pdf)
+
+This implementation (pyDCI) is described and tested in :
+
+* Revisiting distributional correspondence indexing: A Python reimplementation and new experiments, A Moreo, A Esuli, F Sebastiani, arXiv preprint arXiv:1810.09311 [pdf](https://arxiv.org/abs/1810.09311)
+
+Publications based on DCI:
+
+* Lost in Transduction: Transductive Transfer Learning in Text Classification, A Moreo, A Esuli, F Sebastiani, ACM Transactions on Knowledge Discovery from Data. Forthcoming.
+* Cross-lingual sentiment quantification, A Esuli, A Moreo, F Sebastiani, IEEE Intelligent Systems 35 (3), 106-114 [pdf](https://ieeexplore.ieee.org/abstract/document/9131128/)
+* Transductive Distributional Correspondence Indexing for Cross-Domain Topic Classification, A Moreo, A Esuli, and F Sebastiani IIR. 2016. [pdf](http://ceur-ws.org/Vol-1653/paper_5.pdf)
+
+Other related publications:
+
+* Heterogeneous Document Embeddings for Cross-Lingual Text Classification, A Moreo, A Pedrotti, F Sebastiani, SAC 2021, 36th ACM Symposium On Applied Computing, Gwangju, KR, 685-688
+* Funnelling: A New Ensemble Method for Heterogeneous Transfer Learning and Its Application to Cross-Lingual Text Classification, A Esuli, A Moreo, F Sebastiani, ACM Transactions on Information Systems (TOIS) 37 (3), 1-30 [pdf](https://dl.acm.org/doi/abs/10.1145/3326065)
+
+
 ## Requirements
 
 This package has been tested with the following environment (though it might work with older versions too).
