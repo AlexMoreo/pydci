@@ -20,13 +20,13 @@ This implementation (pyDCI) is described and tested in :
 
 * Revisiting distributional correspondence indexing: A Python reimplementation and new experiments, A Moreo, A Esuli, F Sebastiani, arXiv preprint arXiv:1810.09311 [pdf](https://arxiv.org/abs/1810.09311)
 
-Publications based on DCI:
+Extensions of DCI:
 
 * Lost in Transduction: Transductive Transfer Learning in Text Classification, A Moreo, A Esuli, F Sebastiani, ACM Transactions on Knowledge Discovery from Data. Forthcoming.
 * Cross-lingual sentiment quantification, A Esuli, A Moreo, F Sebastiani, IEEE Intelligent Systems 35 (3), 106-114 [pdf](https://ieeexplore.ieee.org/abstract/document/9131128/)
 * Transductive Distributional Correspondence Indexing for Cross-Domain Topic Classification, A Moreo, A Esuli, and F Sebastiani IIR. 2016. [pdf](http://ceur-ws.org/Vol-1653/paper_5.pdf)
 
-Other related publications:
+Other related publications in which DCI is used one way or another:
 
 * Heterogeneous Document Embeddings for Cross-Lingual Text Classification, A Moreo, A Pedrotti, F Sebastiani, SAC 2021, 36th ACM Symposium On Applied Computing, Gwangju, KR, 685-688
 * Funnelling: A New Ensemble Method for Heterogeneous Transfer Learning and Its Application to Cross-Lingual Text Classification, A Esuli, A Moreo, F Sebastiani, ACM Transactions on Information Systems (TOIS) 37 (3), 1-30 [pdf](https://dl.acm.org/doi/abs/10.1145/3326065)
